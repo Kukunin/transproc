@@ -3,6 +3,7 @@
 ## Added
 
 * Add support of custom `Transproc::Registry` to `Transproc::Transformer` (Kukunin)
+* `try_unwrap` transformation, which works with `nil` or absent values (Kukunin)
 
 [Compare v0.4.2...master](https://github.com/solnic/transproc/compare/v0.4.2...master)
 
@@ -11,7 +12,6 @@
 ## Added
 
 * prefix option to HashTransformations#unwrap and HashTransformations#unwrap! (AMHOL)
-* `try_unwrap` transformation, which works with `nil` or absent values (Kukunin)
 
 ## Fixed
 
