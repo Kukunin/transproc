@@ -346,7 +346,9 @@ describe Transproc::HashTransformations do
       input = { 'a' => 'b', 'wrapped' => nil }
       output = Hash[input]
 
-      expect(unwrap[input]).to eq output
+      unwrap[input]
+
+      expect(input).to eql(output)
     end
   end
 
