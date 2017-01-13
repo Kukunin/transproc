@@ -329,8 +329,24 @@ module Transproc
     #
     # @api public
     def self.unwrap(hash, root, keys = nil, prefix: false)
-      nested_copy = hash[root].nil? ? nil : Hash[hash[root]]
-      copy = Hash[hash].merge(root => nested_copy)
+      copy = Hash[hash].merge(root => Hash[hash[root]])
+      unwrap!(copy, root, keys, prefix: prefix)
+    end
+
+    # Same as `:unwrap` but handles nil values
+    #
+    # If value for a specified key is nil, or there is no such key in a hash
+    # `:try_unwrap` returns hash without the specified key and with no added element
+    #
+    # @see HashTransformations.unwrap
+    #
+    # @api public
+    def self.try_unwrap(hash, root, keys = nil, prefix: false)
+      copy = if hash[root].nil?
+               hash.reject { |k, _| k == root }
+             else
+               Hash[hash].merge(root => Hash[hash[root]])
+             end
       unwrap!(copy, root, keys, prefix: prefix)
     end
 
@@ -340,8 +356,7 @@ module Transproc
     #
     # @api public
     def self.unwrap!(hash, root, selected = nil, prefix: false)
-      nested_hash = hash[root]
-      if nested_hash
+      if nested_hash = hash[root]
         keys = nested_hash.keys
         keys &= selected if selected
         new_keys = if prefix
@@ -357,8 +372,8 @@ module Transproc
         end
 
         hash.update(Hash[new_keys.zip(keys.map { |key| nested_hash.delete(key) })])
+        hash.delete(root) if nested_hash.empty?
       end
-      hash.delete(root) if nested_hash.nil? || nested_hash.empty?
 
       hash
     end

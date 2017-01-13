@@ -341,26 +341,11 @@ describe Transproc::HashTransformations do
       expect(input).to eql(output)
     end
 
-    it 'ignores nil value for root' do
+    it 'ignores nil value' do
       unwrap = described_class.t(:unwrap!, 'wrapped', %w(one two three))
-
       input = { 'a' => 'b', 'wrapped' => nil }
-      output = { 'a' => 'b' }
 
-      unwrap[input]
-
-      expect(input).to eql(output)
-    end
-
-    it 'ignores absence of root' do
-      unwrap = described_class.t(:unwrap!, 'wrapped', %w(one two three))
-
-      input = { 'a' => 'b' }
-      output = { 'a' => 'b' }
-
-      unwrap[input]
-
-      expect(input).to eql(output)
+      expect(unwrap[input]).to eq input
     end
   end
 
@@ -380,8 +365,32 @@ describe Transproc::HashTransformations do
       )
     end
 
-    it 'ignores nil value for root' do
+    it "isn't tolerant to nil value" do
       unwrap = described_class.t(:unwrap, 'wrapped', %w(one two three))
+      input = { 'a' => 'b', 'wrapped' => nil }.freeze
+
+      expect { unwrap[input] }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '.try_unwrap' do
+    it 'returns new hash with nested keys lifted to the root' do
+      unwrap = described_class.t(:try_unwrap, 'wrapped')
+
+      input = {
+        'foo' => 'bar',
+        'wrapped' => { 'one' => nil, 'two' => false }.freeze
+      }.freeze
+
+      expect(unwrap[input]).to eql(
+        'foo' => 'bar',
+        'one' => nil,
+        'two' => false
+      )
+    end
+
+    it 'ignores nil value for root' do
+      unwrap = described_class.t(:try_unwrap, 'wrapped', %w(one two three))
 
       input = { 'a' => 'b', 'wrapped' => nil }.freeze
       output = { 'a' => 'b' }.freeze
@@ -390,7 +399,7 @@ describe Transproc::HashTransformations do
     end
 
     it 'ignores absence of root' do
-      unwrap = described_class.t(:unwrap, 'wrapped', %w(one two three))
+      unwrap = described_class.t(:try_unwrap, 'wrapped', %w(one two three))
 
       input = { 'a' => 'b' }.freeze
       output = { 'a' => 'b' }.freeze
