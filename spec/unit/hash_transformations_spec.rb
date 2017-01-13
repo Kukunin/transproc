@@ -348,7 +348,7 @@ describe Transproc::HashTransformations do
 
       input = {
         'foo' => 'bar',
-        'wrapped' => { 'one' => nil, 'two' => false }
+        'wrapped' => { 'one' => nil, 'two' => false }.freeze
       }.freeze
 
       expect(unwrap[input]).to eql(
