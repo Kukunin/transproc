@@ -7,6 +7,7 @@
 ## Fixed
 
 * `map_array` won't cause a SystemStackError in case of gigantic arrays (solnic)
+* `unwrap` works now with `nil` or absent values (Kukunin)
 
 [Compare v0.4.1...v0.4.2](https://github.com/solnic/transproc/compare/v0.4.1...v0.4.2)
 
