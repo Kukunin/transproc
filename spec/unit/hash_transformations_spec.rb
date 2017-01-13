@@ -340,6 +340,28 @@ describe Transproc::HashTransformations do
 
       expect(input).to eql(output)
     end
+
+    it 'ignores nil value for root' do
+      unwrap = described_class.t(:unwrap!, 'wrapped', %w(one two three))
+
+      input = { 'a' => 'b', 'wrapped' => nil }
+      output = { 'a' => 'b' }
+
+      unwrap[input]
+
+      expect(input).to eql(output)
+    end
+
+    it 'ignores absence of root' do
+      unwrap = described_class.t(:unwrap!, 'wrapped', %w(one two three))
+
+      input = { 'a' => 'b' }
+      output = { 'a' => 'b' }
+
+      unwrap[input]
+
+      expect(input).to eql(output)
+    end
   end
 
   describe '.unwrap' do
@@ -356,6 +378,24 @@ describe Transproc::HashTransformations do
         'one' => nil,
         'two' => false
       )
+    end
+
+    it 'ignores nil value for root' do
+      unwrap = described_class.t(:unwrap, 'wrapped', %w(one two three))
+
+      input = { 'a' => 'b', 'wrapped' => nil }.freeze
+      output = { 'a' => 'b' }.freeze
+
+      expect(unwrap[input]).to eql(output)
+    end
+
+    it 'ignores absence of root' do
+      unwrap = described_class.t(:unwrap, 'wrapped', %w(one two three))
+
+      input = { 'a' => 'b' }.freeze
+      output = { 'a' => 'b' }.freeze
+
+      expect(unwrap[input]).to eql(output)
     end
   end
 

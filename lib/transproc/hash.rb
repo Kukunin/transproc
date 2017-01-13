@@ -329,7 +329,8 @@ module Transproc
     #
     # @api public
     def self.unwrap(hash, root, keys = nil, prefix: false)
-      copy = Hash[hash].merge(root => Hash[hash[root]])
+      nested_copy = hash[root].nil? ? nil : Hash[hash[root]]
+      copy = Hash[hash].merge(root => nested_copy)
       unwrap!(copy, root, keys, prefix: prefix)
     end
 
@@ -339,7 +340,8 @@ module Transproc
     #
     # @api public
     def self.unwrap!(hash, root, selected = nil, prefix: false)
-      if nested_hash = hash[root]
+      nested_hash = hash[root]
+      if nested_hash
         keys = nested_hash.keys
         keys &= selected if selected
         new_keys = if prefix
@@ -355,8 +357,8 @@ module Transproc
         end
 
         hash.update(Hash[new_keys.zip(keys.map { |key| nested_hash.delete(key) })])
-        hash.delete(root) if nested_hash.empty?
       end
+      hash.delete(root) if nested_hash.nil? || nested_hash.empty?
 
       hash
     end
