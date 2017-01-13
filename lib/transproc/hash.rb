@@ -370,12 +370,9 @@ module Transproc
     #
     # @api public
     def self.try_unwrap(hash, root, keys = nil, prefix: false)
-      copy = if hash[root].nil?
-               hash.reject { |k, _| k == root }
-             else
-               Hash[hash].merge(root => Hash[hash[root]])
-             end
-      unwrap!(copy, root, keys, prefix: prefix)
+      root_value = hash[root] && Hash[hash[root]]
+      copy = Hash[hash].merge(root => root_value)
+      try_unwrap!(copy, root, keys, prefix: prefix)
     end
 
     # Same as `:try_unwrap` but mutates the hash
