@@ -376,6 +376,41 @@ describe Transproc::HashTransformations do
     end
   end
 
+  describe '.try_unwrap!' do
+    it 'returns updated hash with nested keys lifted to the root' do
+      unwrap = described_class.t(:try_unwrap!, 'wrapped', %w(one))
+
+      input = { 'foo' => 'bar', 'wrapped' => { 'one' => nil, 'two' => false } }
+      output = { 'foo' => 'bar', 'one' => nil, 'wrapped' => { 'two' => false } }
+
+      unwrap[input]
+
+      expect(input).to eql(output)
+    end
+
+    it 'ignores nil value for root' do
+      unwrap = described_class.t(:try_unwrap!, 'wrapped', %w(one two three))
+
+      input = { 'a' => 'b', 'wrapped' => nil }
+      output = { 'a' => 'b' }
+
+      unwrap[input]
+
+      expect(input).to eql(output)
+    end
+
+    it 'ignores absence of root' do
+      unwrap = described_class.t(:try_unwrap!, 'wrapped', %w(one two three))
+
+      input = { 'a' => 'b' }
+      output = { 'a' => 'b' }
+
+      unwrap[input]
+
+      expect(input).to eql(output)
+    end
+  end
+
   describe '.try_unwrap' do
     it 'returns new hash with nested keys lifted to the root' do
       unwrap = described_class.t(:try_unwrap, 'wrapped')

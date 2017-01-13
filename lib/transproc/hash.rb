@@ -333,23 +333,6 @@ module Transproc
       unwrap!(copy, root, keys, prefix: prefix)
     end
 
-    # Same as `:unwrap` but handles nil values
-    #
-    # If value for a specified key is nil, or there is no such key in a hash
-    # `:try_unwrap` returns hash without the specified key and with no added element
-    #
-    # @see HashTransformations.unwrap
-    #
-    # @api public
-    def self.try_unwrap(hash, root, keys = nil, prefix: false)
-      copy = if hash[root].nil?
-               hash.reject { |k, _| k == root }
-             else
-               Hash[hash].merge(root => Hash[hash[root]])
-             end
-      unwrap!(copy, root, keys, prefix: prefix)
-    end
-
     # Same as `:unwrap` but mutates the hash
     #
     # @see HashTransformations.unwrap
@@ -376,6 +359,33 @@ module Transproc
       end
 
       hash
+    end
+
+    # Same as `:unwrap` but handles nil values
+    #
+    # If value for a specified key is nil, or there is no such key in a hash
+    # `:try_unwrap` returns hash without the specified key and with no added element
+    #
+    # @see HashTransformations.unwrap
+    #
+    # @api public
+    def self.try_unwrap(hash, root, keys = nil, prefix: false)
+      copy = if hash[root].nil?
+               hash.reject { |k, _| k == root }
+             else
+               Hash[hash].merge(root => Hash[hash[root]])
+             end
+      unwrap!(copy, root, keys, prefix: prefix)
+    end
+
+    # Same as `:try_unwrap` but mutates the hash
+    #
+    # @see HashTransformations.try_unwrap
+    #
+    # @api public
+    def self.try_unwrap!(hash, root, keys = nil, prefix: false)
+      hash.delete(root) unless hash[root]
+      unwrap!(hash, root, keys, prefix: prefix)
     end
 
     # Folds array of tuples to array of values from a specified key
