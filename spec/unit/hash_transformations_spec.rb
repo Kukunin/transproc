@@ -344,8 +344,9 @@ describe Transproc::HashTransformations do
     it 'ignores nil value' do
       unwrap = described_class.t(:unwrap!, 'wrapped', %w(one two three))
       input = { 'a' => 'b', 'wrapped' => nil }
+      output = Hash[input]
 
-      expect(unwrap[input]).to eq input
+      expect(unwrap[input]).to eq output
     end
   end
 
