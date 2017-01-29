@@ -38,6 +38,7 @@ module Transproc
     #
     # @api public
     def self.map_array(array, fn)
+      array = Array[*array] unless array.is_a?(Array)
       array.map { |value| fn[value] }
     end
 

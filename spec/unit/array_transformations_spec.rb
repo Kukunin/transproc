@@ -80,6 +80,16 @@ describe Transproc::ArrayTransformations do
 
       expect { map[input] }.to_not raise_error
     end
+
+    it 'works with singular value' do
+      map = described_class.t(:map_array, :to_sym.to_proc)
+
+      input = 'abc'.freeze
+
+      output = [:abc]
+
+      expect(map[input]).to eql(output)
+    end
   end
 
   it { expect(described_class).not_to be_contain(:map_array!) }
